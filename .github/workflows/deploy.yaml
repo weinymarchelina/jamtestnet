@@ -16,7 +16,7 @@ jobs:
           # Loop through all JSON files in any state_transitions folder under data/*
           for file in $(find data/*/state_transitions -type f -name '*.json'); do
             # Construct the raw file URL using the repository name and branch.
-          url="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/main/$file"
+          url="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/actions/$file"
           echo "Processing $file"
 
             # Execute the curl request and handle errors
