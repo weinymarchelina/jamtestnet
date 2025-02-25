@@ -11,26 +11,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-#      - name: Install curl
-#        run: |
-#          sudo apt update
-#          sudo apt install -y curl
       - name: Process JSON files in state_transitions
         run: |
-          REPO="${{ github.repository }}"
-          BRANCH="actions"
           # Loop through all JSON files in any state_transitions folder under data/*
-          find data/*/state_transitions -type f -name '*.json' | while IFS= read -r file; do
-#          for file in $(find data/*/state_transitions -type f -name '*.json'); do
+          for file in $(find data/*/state_transitions -type f -name '*.json'); do
             # Construct the raw file URL using the repository name and branch.
-            url="https://raw.githubusercontent.com/$REPO/$BRANCH/$file"
-#            url="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/main/$file"
-            echo "Processing $file"
-            
-            # Execute the curl commands
-            curl -s "$url" | \
-              curl -X POST https://dev.jamcha.in/api/v1/functions/check_stf_safrole \
-                -H 'accept: application/json' \
-                -H 'Content-Type: application/json' \
-                -d @-
+          url="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/main/$file"
+          echo "Processing $file"
+
+            # Execute the curl request and handle errors
+          response=$(curl -s "$url" | curl -X POST https://dev.jamcha.in/api/v1/functions/check_stf_safrole \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -d @-)
           done
+
