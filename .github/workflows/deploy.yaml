@@ -15,7 +15,6 @@ jobs:
 #        run: |
 #          sudo apt update
 #          sudo apt install -y curl
-
       - name: Process JSON files in state_transitions
         run: |
           REPO="${{ github.repository }}"
