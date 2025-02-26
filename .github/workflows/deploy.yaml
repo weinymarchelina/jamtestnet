@@ -29,18 +29,18 @@ jobs:
           url="https://raw.githubusercontent.com/$REPO/$BRANCH/${file#*/}"
           echo "Processing $file"
           json_data=$(curl -s "$url")
-  # Validate JSON before sending
+          # Validate JSON before sending
           if ! echo "$json_data" | jq empty 2>/dev/null; then
-          echo "Invalid JSON from $url, skipping..."
-          continue
+               echo "Invalid JSON from $url, skipping..."
+               continue
           fi
           response=$(curl -s -X POST https://dev.jamcha.in/api/v1/functions/check_stf_safrole \
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
             -d "$json_data")
-  # Ensure response is JSON
+           # Ensure response is JSON
           if [[ -z "$response" || "$response" == "null" ]]; then
-          response="{\"error\": \"No response from API\"}"
+             response="{\"error\": \"No response from API\"}"
           fi
           echo "$response" | jq .
           done
