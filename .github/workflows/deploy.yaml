@@ -25,22 +25,19 @@ jobs:
         run: |
           REPO="${{ github.repository }}"
           BRANCH="actions"
+          # Loop through all JSON files in any state_transitions folder under data/*
           for file in $(find data/*/state_transitions -type f -name '*.json'); do
+            # Construct the raw file URL using the repository name and branch.
           url="https://raw.githubusercontent.com/$REPO/$BRANCH/${file#*/}"
           echo "Processing $file"
-          json_data=$(curl -s "$url")
-          # Validate JSON before sending
-          if ! echo "$json_data" | jq empty 2>/dev/null; then
-               echo "Invalid JSON from $url, skipping..."
-               continue
-          fi
-          response=$(curl -s -X POST https://dev.jamcha.in/api/v1/functions/check_stf_safrole \
+
+            # Execute the curl request and handle errors
+          response=$(curl -s "$url" | curl -X POST https://dev.jamcha.in/api/v1/functions/check_stf_safrole \
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
-            -d "$json_data")
-           # Ensure response is JSON
-          if [[ -z "$response" || "$response" == "null" ]]; then
-             response="{\"error\": \"No response from API\"}"
+            -d @-)
+          if [[ -z "$response" ]]; then
+             response="{\"error\": \"Empty response from API\"}"
           fi
           echo "$response" | jq .
           done
