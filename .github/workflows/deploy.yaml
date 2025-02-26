@@ -37,7 +37,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d @-)
           if [[ -z "$response" ]]; then
-             response="{\"error\": \"Empty response from API\"}"
+             response="{\"service_account\": \"Empty response from API\"}"
           fi
           echo "$response" | jq .
           done
